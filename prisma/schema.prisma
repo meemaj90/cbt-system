@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  password      String
+  role          Role     @default(STUDENT)
+  studentId     String?  @unique
+  classId       String?
+  class         Class?   @relation(fields: [classId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  createdAssessments Assessment[] @relation("CreatedBy")
+  submissions        Submission[]
+  oralScores         OralScore[]
+}
+
+model Class {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  students    User[]
+  assessments Assessment[]
+}
+
+model Subject {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  assessments Assessment[]
+}
+
+model Assessment {
+  id            String           @id @default(cuid())
+  title         String
+  description   String?
+  type          AssessmentType
+  status        AssessmentStatus @default(DRAFT)
+  subjectId     String
+  subject       Subject          @relation(fields: [subjectId], references: [id])
+  classId       String?
+  class         Class?           @relation(fields: [classId], references: [id])
+  createdById   String
+  createdBy     User             @relation("CreatedBy", fields: [createdById], references: [id])
+  startTime     DateTime?
+  endTime       DateTime?
+  duration      Int?
+  totalMarks    Int              @default(100)
+  passMark      Int              @default(50)
+  instructions  String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  questions       Question[]
+  submissions     Submission[]
+  projectCriteria ProjectCriteria[]
+  oralCriteria    OralCriteria[]
+}
+
+model Question {
+  id            String       @id @default(cuid())
+  assessmentId  String
+  assessment    Assessment   @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  order         Int
+  type          QuestionType
+  text          String
+  marks         Int          @default(1)
+  options       String?
+  correctAnswer String?
+  createdAt     DateTime     @default(now())
+
+  answers Answer[]
+}
+
+model ProjectCriteria {
+  id           String     @id @default(cuid())
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  maxMarks     Int
+
+  scores ProjectScore[]
+}
+
+model OralCriteria {
+  id           String     @id @default(cuid())
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  maxMarks     Int
+
+  scores OralScore[]
+}
+
+model Submission {
+  id           String           @id @default(cuid())
+  assessmentId String
+  assessment   Assessment       @relation(fields: [assessmentId], references: [id])
+  studentId    String
+  student      User             @relation(fields: [studentId], references: [id])
+  status       SubmissionStatus @default(IN_PROGRESS)
+  startedAt    DateTime         @default(now())
+  submittedAt  DateTime?
+  totalScore   Float?
+  percentage   Float?
+  grade        String?
+  feedback     String?
+  gradedAt     DateTime?
+  gradedById   String?
+
+  answers       Answer[]
+  projectScores ProjectScore[]
+  oralScores    OralScore[]
+
+  @@unique([assessmentId, studentId])
+}
+
+model Answer {
+  id           String     @id @default(cuid())
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     Question   @relation(fields: [questionId], references: [id])
+  answer       String?
+  isCorrect    Boolean?
+  marksAwarded Float?
+  createdAt    DateTime   @default(now())
+}
+
+model ProjectScore {
+  id           String          @id @default(cuid())
+  submissionId String
+  submission   Submission      @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  criteriaId   String
+  criteria     ProjectCriteria @relation(fields: [criteriaId], references: [id])
+  score        Float
+  comment      String?
+  gradedById   String?
+  gradedAt     DateTime        @default(now())
+}
+
+model OralScore {
+  id           String       @id @default(cuid())
+  submissionId String
+  submission   Submission   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  criteriaId   String
+  criteria     OralCriteria @relation(fields: [criteriaId], references: [id])
+  score        Float
+  comment      String?
+  gradedById   String
+  gradedBy     User         @relation(fields: [gradedById], references: [id])
+  gradedAt     DateTime     @default(now())
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum AssessmentType {
+  WRITTEN
+  PROJECT
+  ORAL
+}
+
+enum AssessmentStatus {
+  DRAFT
+  PUBLISHED
+  ACTIVE
+  CLOSED
+}
+
+enum QuestionType {
+  MCQ
+  SHORT_ANSWER
+  ESSAY
+  FILE_UPLOAD
+}
+
+enum SubmissionStatus {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+}
