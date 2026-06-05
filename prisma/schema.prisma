@@ -12,7 +12,7 @@ model User {
   name          String
   email         String   @unique
   password      String
-  role          Role     @default(STUDENT)
+  role          String   @default("STUDENT")
   studentId     String?  @unique
   classId       String?
   class         Class?   @relation(fields: [classId], references: [id])
@@ -48,8 +48,8 @@ model Assessment {
   id            String           @id @default(cuid())
   title         String
   description   String?
-  type          AssessmentType
-  status        AssessmentStatus @default(DRAFT)
+  type          String
+  status        String           @default("DRAFT")
   subjectId     String
   subject       Subject          @relation(fields: [subjectId], references: [id])
   classId       String?
@@ -76,7 +76,7 @@ model Question {
   assessmentId  String
   assessment    Assessment   @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   order         Int
-  type          QuestionType
+  type          String
   text          String
   marks         Int          @default(1)
   options       String?
@@ -114,7 +114,7 @@ model Submission {
   assessment   Assessment       @relation(fields: [assessmentId], references: [id])
   studentId    String
   student      User             @relation(fields: [studentId], references: [id])
-  status       SubmissionStatus @default(IN_PROGRESS)
+  status       String           @default("IN_PROGRESS")
   startedAt    DateTime         @default(now())
   submittedAt  DateTime?
   totalScore   Float?
@@ -168,34 +168,8 @@ model OralScore {
   gradedAt     DateTime     @default(now())
 }
 
-enum Role {
-  ADMIN
-  TEACHER
-  STUDENT
-}
-
-enum AssessmentType {
-  WRITTEN
-  PROJECT
-  ORAL
-}
-
-enum AssessmentStatus {
-  DRAFT
-  PUBLISHED
-  ACTIVE
-  CLOSED
-}
-
-enum QuestionType {
-  MCQ
-  SHORT_ANSWER
-  ESSAY
-  FILE_UPLOAD
-}
-
-enum SubmissionStatus {
-  IN_PROGRESS
-  SUBMITTED
-  GRADED
-}
+// Roles: ADMIN, TEACHER, STUDENT
+// AssessmentType: WRITTEN, PROJECT, ORAL
+// AssessmentStatus: DRAFT, PUBLISHED, ACTIVE, CLOSED
+// QuestionType: MCQ, SHORT_ANSWER, ESSAY, FILE_UPLOAD
+// SubmissionStatus: IN_PROGRESS, SUBMITTED, GRADED

@@ -1,4 +1,8 @@
-import { PrismaClient, Role, AssessmentType, AssessmentStatus, QuestionType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+const Role = { ADMIN: "ADMIN", TEACHER: "TEACHER", STUDENT: "STUDENT" } as const;
+const AssessmentType = { WRITTEN: "WRITTEN", PROJECT: "PROJECT", ORAL: "ORAL" } as const;
+const AssessmentStatus = { PUBLISHED: "PUBLISHED", DRAFT: "DRAFT" } as const;
+const QuestionType = { MCQ: "MCQ", ESSAY: "ESSAY", SHORT_ANSWER: "SHORT_ANSWER" } as const;
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
