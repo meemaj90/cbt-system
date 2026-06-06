@@ -1,7 +1,7 @@
 export type Role = "ADMIN" | "TEACHER" | "STUDENT";
 export type AssessmentType = "WRITTEN" | "PROJECT" | "ORAL";
 export type AssessmentStatus = "DRAFT" | "PUBLISHED" | "ACTIVE" | "CLOSED";
-export type QuestionType = "MCQ" | "SHORT_ANSWER" | "ESSAY" | "FILE_UPLOAD";
+export type QuestionType = "MCQ" | "SHORT_ANSWER" | "ESSAY" | "FILE_UPLOAD" | "TRUE_FALSE" | "FILL_BLANK";
 export type SubmissionStatus = "IN_PROGRESS" | "SUBMITTED" | "GRADED";
 
 export interface UserSession {
@@ -40,6 +40,7 @@ export interface QuestionData {
   marks: number;
   options?: string[] | null;
   correctAnswer?: string | null;
+  imageUrl?: string | null;
 }
 
 export interface CriteriaData {

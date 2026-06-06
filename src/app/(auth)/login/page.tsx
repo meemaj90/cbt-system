@@ -29,7 +29,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Fetch session to get role for redirect
     const res = await fetch("/api/auth/session");
     const session = await res.json();
     const role = session?.user?.role;
@@ -41,44 +40,36 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 px-4">
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #0f1117 100%)" }}
+    >
       <div className="w-full max-w-md">
         {/* Logo / Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 mb-4">
-            <svg
-              className="w-9 h-9 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
+          <div
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 text-white font-black text-2xl"
+            style={{ background: "linear-gradient(135deg, #1a56db, #ff6b00)" }}
+          >
+            N
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Nextora Academy</h1>
-          <p className="text-gray-500 text-sm mt-1">Computer-Based Testing System</p>
+          <h1 className="text-2xl font-bold text-white">Nextora Academy</h1>
+          <p className="text-sm mt-1" style={{ color: "#6b7280" }}>Computer-Based Testing System</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Sign in to your account</h2>
+        <div className="rounded-2xl border p-8" style={{ background: "#1e2235", borderColor: "#2e3250" }}>
+          <h2 className="text-xl font-semibold text-white mb-6">Sign in to your account</h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 p-3 rounded-lg text-sm" style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", color: "#ef4444" }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="form-label">
-                Email address
-              </label>
+              <label htmlFor="email" className="form-label">Email address</label>
               <input
                 id="email"
                 type="email"
@@ -91,9 +82,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
+              <label htmlFor="password" className="form-label">Password</label>
               <input
                 id="password"
                 type="password"
@@ -108,7 +97,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-2.5 text-base"
+              className="w-full btn-primary py-2.5 text-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
@@ -116,9 +105,9 @@ export default function LoginPage() {
         </div>
 
         {/* Demo credentials */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl text-sm">
-          <p className="font-semibold text-blue-800 mb-2">Demo Accounts</p>
-          <div className="space-y-1 text-blue-700">
+        <div className="mt-6 p-4 rounded-xl text-sm" style={{ background: "rgba(26,86,219,0.08)", border: "1px solid rgba(26,86,219,0.2)" }}>
+          <p className="font-semibold mb-2" style={{ color: "#3b82f6" }}>Demo Accounts</p>
+          <div className="space-y-1" style={{ color: "#a0a8c0" }}>
             <p>Admin: admin@nextora.edu / admin123</p>
             <p>Teacher: teacher1@nextora.edu / teacher123</p>
             <p>Student: chidi@nextora.edu / student123</p>

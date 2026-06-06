@@ -61,7 +61,8 @@ model Assessment {
   duration      Int?
   totalMarks    Int              @default(100)
   passMark      Int              @default(50)
-  instructions  String?
+  instructions        String?
+  randomizeQuestions  Boolean          @default(false)
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 
@@ -81,6 +82,7 @@ model Question {
   marks         Int          @default(1)
   options       String?
   correctAnswer String?
+  imageUrl      String?
   createdAt     DateTime     @default(now())
 
   answers Answer[]
