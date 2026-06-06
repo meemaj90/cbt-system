@@ -7,19 +7,19 @@ interface BadgeProps {
 }
 
 export function Badge({ children, variant = "default", className }: BadgeProps) {
-  const variants = {
-    default: "bg-gray-100 text-gray-800",
-    success: "bg-green-100 text-green-800",
-    warning: "bg-yellow-100 text-yellow-800",
-    danger: "bg-red-100 text-red-800",
-    info: "bg-blue-100 text-blue-800",
+  const styles: Record<string, React.CSSProperties> = {
+    default: { background: "rgba(107,114,128,0.15)", color: "#a0a8c0" },
+    success: { background: "rgba(16,185,129,0.15)", color: "#10b981" },
+    warning: { background: "rgba(245,158,11,0.15)", color: "#f59e0b" },
+    danger: { background: "rgba(239,68,68,0.15)", color: "#ef4444" },
+    info: { background: "rgba(26,86,219,0.15)", color: "#3b82f6" },
   };
 
   return (
     <span
+      style={styles[variant]}
       className={cn(
         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
-        variants[variant],
         className
       )}
     >

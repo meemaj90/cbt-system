@@ -12,7 +12,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const role = (session.user as any).role;
   if (role !== "STUDENT") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { answers } = await req.json();
+  const body = await req.json();
+  const { answers } = body;
   // answers: Array<{ questionId: string; answer: string }>
 
   const assessment = await prisma.assessment.findUnique({
@@ -41,7 +42,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         isCorrect = a.answer === question.correctAnswer;
         marksAwarded = isCorrect ? question.marks : 0;
         autoScore += marksAwarded;
-      } else if (question.type === "SHORT_ANSWER" && question.correctAnswer) {
+      } else if (
+        (question.type === "SHORT_ANSWER" || question.type === "FILL_BLANK" || question.type === "TRUE_FALSE") &&
+        question.correctAnswer
+      ) {
         isCorrect =
           a.answer?.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
         marksAwarded = isCorrect ? question.marks : 0;
@@ -59,7 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   // Check if all questions are auto-gradeable
   const hasManualQuestions = assessment.questions.some(
-    (q) => q.type === "ESSAY" || q.type === "FILE_UPLOAD"
+    (q) => q.type === "ESSAY" || q.type === "FILE_UPLOAD" || (q.type === "SHORT_ANSWER" && !q.correctAnswer)
   );
 
   const submissionStatus = hasManualQuestions ? "SUBMITTED" : "GRADED";

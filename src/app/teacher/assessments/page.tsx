@@ -22,8 +22,8 @@ export default async function TeacherAssessmentsPage() {
     <div className="page-container">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Assessments</h1>
-          <p className="text-gray-500 text-sm mt-1">{assessments.length} assessments</p>
+          <h1 className="text-2xl font-bold text-white">My Assessments</h1>
+          <p className="text-sm mt-1" style={{ color: "#6b7280" }}>{assessments.length} assessment{assessments.length !== 1 ? "s" : ""}</p>
         </div>
         <Link href="/teacher/assessments/new" className="btn-primary">
           + New Assessment
@@ -31,8 +31,8 @@ export default async function TeacherAssessmentsPage() {
       </div>
 
       {assessments.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-500 mb-4">You have not created any assessments yet.</p>
+        <div className="text-center py-16 card">
+          <p className="mb-4" style={{ color: "#6b7280" }}>You have not created any assessments yet.</p>
           <Link href="/teacher/assessments/new" className="btn-primary">
             Create Assessment
           </Link>

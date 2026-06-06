@@ -34,7 +34,6 @@ export default async function StudentAssessmentPage({ params }: { params: { id: 
 
   // For project and oral, just show info and allow submission creation
   if (assessment.type !== "WRITTEN") {
-    // Create submission if not exists
     if (!submission) {
       await prisma.submission.create({
         data: {
@@ -54,34 +53,50 @@ export default async function StudentAssessmentPage({ params }: { params: { id: 
   }));
 
   return (
-    <div className="page-container max-w-3xl">
-      <div className="mb-6">
-        <Link href="/student/assessments" className="text-sm text-gray-500 hover:text-indigo-600">
-          ← Back to assessments
-        </Link>
-      </div>
-
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h1 className="text-xl font-bold text-gray-900 mb-2">{assessment.title}</h1>
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-          <span>{assessment.subject.name}</span>
-          {assessment.class && <span>{assessment.class.name}</span>}
-          <span>{assessment.totalMarks} marks</span>
-          {assessment.duration && <span>{assessment.duration} min</span>}
-          {assessment.endTime && <span>Due: {formatDateTime(assessment.endTime)}</span>}
+    <div style={{ background: "#0f1117", minHeight: "100vh" }}>
+      <div className="max-w-3xl mx-auto px-4 py-6">
+        <div className="mb-4">
+          <Link
+            href="/student/assessments"
+            className="text-sm transition-colors"
+            style={{ color: "#6b7280" }}
+          >
+            ← Back to assessments
+          </Link>
         </div>
-        {assessment.instructions && (
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm font-medium text-blue-800 mb-1">Instructions</p>
-            <p className="text-sm text-blue-700">{assessment.instructions}</p>
-          </div>
-        )}
-      </div>
 
-      <TakeAssessment
-        assessment={{ ...assessment, questions: questionsWithParsedOptions } as any}
-        existingSubmission={submission as any}
-      />
+        <div className="card mb-6">
+          <h1 className="text-xl font-bold text-white mb-2">{assessment.title}</h1>
+          <div className="flex flex-wrap gap-3 text-sm mb-3" style={{ color: "#a0a8c0" }}>
+            <span>{assessment.subject.name}</span>
+            {assessment.class && <span>{assessment.class.name}</span>}
+            <span>{assessment.totalMarks} marks</span>
+            {assessment.duration && <span>{assessment.duration} min</span>}
+            {assessment.endTime && <span>Due: {formatDateTime(assessment.endTime)}</span>}
+          </div>
+          {assessment.instructions && (
+            <div
+              className="mt-3 p-3 rounded-lg text-sm"
+              style={{
+                background: "rgba(26,86,219,0.08)",
+                border: "1px solid rgba(26,86,219,0.2)",
+                color: "#a0a8c0",
+              }}
+            >
+              <p className="font-medium mb-1" style={{ color: "#3b82f6" }}>Instructions</p>
+              <p>{assessment.instructions}</p>
+            </div>
+          )}
+        </div>
+
+        <TakeAssessment
+          assessment={{
+            ...assessment,
+            questions: questionsWithParsedOptions,
+          } as any}
+          existingSubmission={submission as any}
+        />
+      </div>
     </div>
   );
 }

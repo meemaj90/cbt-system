@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 interface Subject {
   id: string;
@@ -60,63 +58,99 @@ export default function SubjectsPage() {
     <div className="page-container">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subjects</h1>
-          <p className="text-gray-500 text-sm mt-1">{subjects.length} subjects</p>
+          <h1 className="text-2xl font-bold text-white">Subjects</h1>
+          <p className="text-sm mt-1" style={{ color: "#6b7280" }}>{subjects.length} subject{subjects.length !== 1 ? "s" : ""}</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)}>
+        <button onClick={() => setShowForm(!showForm)} className="btn-primary">
           {showForm ? "Cancel" : "+ Add Subject"}
-        </Button>
+        </button>
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Add Subject</h2>
+        <div className="card mb-6">
+          <h2 className="font-semibold text-white mb-4">Add Subject</h2>
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+            <div
+              className="mb-4 p-3 rounded-lg text-sm"
+              style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", color: "#ef4444" }}
+            >
+              {error}
+            </div>
           )}
           <form onSubmit={handleCreate} className="grid grid-cols-3 gap-4">
             <div>
               <label className="form-label">Subject Name</label>
-              <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="e.g., Mathematics" />
+              <input
+                className="form-input"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+                placeholder="e.g., Mathematics"
+              />
             </div>
             <div>
               <label className="form-label">Code</label>
-              <Input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} required placeholder="e.g., MATH" />
+              <input
+                className="form-input"
+                value={form.code}
+                onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
+                required
+                placeholder="e.g., MATH"
+              />
             </div>
             <div>
               <label className="form-label">Description</label>
-              <Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Optional" />
+              <input
+                className="form-input"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Optional"
+              />
             </div>
             <div className="col-span-3 flex gap-2">
-              <Button type="submit" disabled={saving}>{saving ? "Saving..." : "Add Subject"}</Button>
-              <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
+              <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50">
+                {saving ? "Saving..." : "Add Subject"}
+              </button>
+              <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>
+                Cancel
+              </button>
             </div>
           </form>
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200">
+      <div className="card p-0 overflow-hidden">
         {loading ? (
-          <div className="px-6 py-8 text-center text-gray-500">Loading...</div>
+          <div className="px-6 py-8 text-center text-sm" style={{ color: "#6b7280" }}>Loading...</div>
         ) : (
-          <div className="divide-y divide-gray-100">
+          <div>
             {subjects.length === 0 ? (
-              <p className="px-6 py-8 text-center text-gray-500 text-sm">No subjects yet.</p>
+              <p className="px-6 py-8 text-center text-sm" style={{ color: "#6b7280" }}>No subjects yet.</p>
             ) : (
               subjects.map((s) => (
-                <div key={s.id} className="px-6 py-4 flex items-center justify-between">
+                <div key={s.id} className="px-6 py-4 border-b last:border-0 flex items-center justify-between" style={{ borderColor: "#2e3250" }}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">{s.code}</span>
-                      <span className="font-medium text-gray-900">{s.name}</span>
+                      <span
+                        className="text-sm font-bold px-2 py-0.5 rounded"
+                        style={{ background: "rgba(26,86,219,0.15)", color: "#3b82f6" }}
+                      >
+                        {s.code}
+                      </span>
+                      <span className="font-medium text-white">{s.name}</span>
                     </div>
-                    {s.description && <p className="text-sm text-gray-500 mt-0.5">{s.description}</p>}
+                    {s.description && (
+                      <p className="text-sm mt-0.5" style={{ color: "#6b7280" }}>{s.description}</p>
+                    )}
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-500">{s._count?.assessments ?? 0} assessments</span>
+                    <span className="text-sm" style={{ color: "#6b7280" }}>
+                      {s._count?.assessments ?? 0} assessments
+                    </span>
                     <button
                       onClick={() => handleDelete(s.id)}
-                      className="text-red-600 hover:text-red-800 text-sm"
+                      className="text-sm"
+                      style={{ color: "#ef4444" }}
                     >
                       Delete
                     </button>

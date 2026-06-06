@@ -7,13 +7,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ className, ...props },
   return (
     <input
       ref={ref}
-      className={cn(
-        "block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm",
-        "focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
-        "disabled:bg-gray-50 disabled:text-gray-500",
-        "placeholder:text-gray-400",
-        className
-      )}
+      className={cn("form-input", className)}
       {...props}
     />
   );

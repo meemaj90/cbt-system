@@ -9,12 +9,8 @@ export default async function TeacherDashboard() {
 
   const [assessmentCount, submissionCount, gradedCount, recentAssessments] = await Promise.all([
     prisma.assessment.count({ where: { createdById: userId } }),
-    prisma.submission.count({
-      where: { assessment: { createdById: userId } },
-    }),
-    prisma.submission.count({
-      where: { assessment: { createdById: userId }, status: "GRADED" },
-    }),
+    prisma.submission.count({ where: { assessment: { createdById: userId } } }),
+    prisma.submission.count({ where: { assessment: { createdById: userId }, status: "GRADED" } }),
     prisma.assessment.findMany({
       where: { createdById: userId },
       take: 6,
@@ -31,38 +27,40 @@ export default async function TeacherDashboard() {
     where: { assessment: { createdById: userId }, status: "SUBMITTED" },
   });
 
+  const stats = [
+    { label: "My Assessments", value: assessmentCount, color: "#1a56db" },
+    { label: "Total Submissions", value: submissionCount, color: "#3b82f6" },
+    { label: "Pending Grading", value: pendingGrading, color: "#ff6b00" },
+    { label: "Graded", value: gradedCount, color: "#10b981" },
+  ];
+
   return (
     <div className="page-container">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Teacher Dashboard</h1>
-        <p className="text-gray-500 mt-1">Welcome back, {session!.user!.name}</p>
+        <h1 className="text-2xl font-bold text-white">Teacher Dashboard</h1>
+        <p className="text-sm mt-1" style={{ color: "#6b7280" }}>Welcome back, {session!.user!.name}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="text-2xl font-bold text-indigo-600">{assessmentCount}</div>
-          <div className="text-sm text-gray-500 mt-0.5">My Assessments</div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="text-2xl font-bold text-blue-600">{submissionCount}</div>
-          <div className="text-sm text-gray-500 mt-0.5">Total Submissions</div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="text-2xl font-bold text-orange-600">{pendingGrading}</div>
-          <div className="text-sm text-gray-500 mt-0.5">Pending Grading</div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="text-2xl font-bold text-green-600">{gradedCount}</div>
-          <div className="text-sm text-gray-500 mt-0.5">Graded</div>
-        </div>
+        {stats.map((s) => (
+          <div key={s.label} className="stat-card">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: `${s.color}20` }}
+            >
+              <div className="w-4 h-4 rounded-full" style={{ background: s.color }} />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">{s.value}</p>
+              <p className="text-xs" style={{ color: "#6b7280" }}>{s.label}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-semibold text-gray-900">Recent Assessments</h2>
-        <Link
-          href="/teacher/assessments/new"
-          className="btn-primary text-sm"
-        >
+        <h2 className="font-semibold text-white">Recent Assessments</h2>
+        <Link href="/teacher/assessments/new" className="btn-primary text-sm">
           + New Assessment
         </Link>
       </div>
@@ -70,17 +68,23 @@ export default async function TeacherDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recentAssessments.map((a) => (
           <Link key={a.id} href={`/teacher/assessments/${a.id}`} className="block group">
-            <div className="bg-white rounded-xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-sm transition-all">
+            <div
+              className="rounded-xl border p-5 transition-all"
+              style={{ background: "#1e2235", borderColor: "#2e3250" }}
+            >
               <div className="flex items-start justify-between mb-2">
-                <span className="text-xs font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                <span
+                  className="text-xs font-medium px-2 py-0.5 rounded"
+                  style={{ background: "rgba(26,86,219,0.15)", color: "#3b82f6" }}
+                >
                   {a.subject.code}
                 </span>
                 <StatusBadge status={a.status} />
               </div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors mt-2">
+              <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors mt-2">
                 {a.title}
               </h3>
-              <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+              <div className="flex items-center gap-4 mt-3 pt-3 border-t text-xs" style={{ borderColor: "#2e3250", color: "#6b7280" }}>
                 <span>{a.type}</span>
                 {a.class && <span>{a.class.name}</span>}
                 <span>{a._count.submissions} submissions</span>
@@ -90,8 +94,8 @@ export default async function TeacherDashboard() {
         ))}
 
         {recentAssessments.length === 0 && (
-          <div className="col-span-3 text-center py-12 bg-white rounded-xl border border-gray-200">
-            <p className="text-gray-500 mb-4">No assessments yet.</p>
+          <div className="col-span-3 text-center py-12 card">
+            <p className="mb-4" style={{ color: "#6b7280" }}>No assessments yet.</p>
             <Link href="/teacher/assessments/new" className="btn-primary">
               Create your first assessment
             </Link>

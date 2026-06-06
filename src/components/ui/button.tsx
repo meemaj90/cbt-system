@@ -9,10 +9,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", ...props }, ref) => {
     const variants = {
-      primary: "bg-indigo-600 hover:bg-indigo-700 text-white border-transparent",
-      secondary: "bg-white hover:bg-gray-50 text-gray-700 border-gray-300",
-      danger: "bg-red-600 hover:bg-red-700 text-white border-transparent",
-      ghost: "bg-transparent hover:bg-gray-100 text-gray-700 border-transparent",
+      primary: "text-white border-transparent",
+      secondary: "border text-white",
+      danger: "text-white border-transparent",
+      ghost: "bg-transparent border-transparent",
+    };
+
+    const styles: Record<string, React.CSSProperties> = {
+      primary: { background: "#1a56db" },
+      secondary: { background: "#1e2235", borderColor: "#2e3250", color: "#a0a8c0" },
+      danger: { background: "#ef4444" },
+      ghost: { color: "#a0a8c0" },
     };
 
     const sizes = {
@@ -24,10 +31,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        style={styles[variant]}
         className={cn(
           "inline-flex items-center justify-center font-medium rounded-lg border transition-colors",
-          "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
           variants[variant],
           sizes[size],
           className

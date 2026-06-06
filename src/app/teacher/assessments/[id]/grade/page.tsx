@@ -35,17 +35,17 @@ export default async function GradePage({ params }: { params: { id: string } }) 
   return (
     <div className="page-container">
       <div className="flex items-center gap-2 mb-2">
-        <Link href={`/teacher/assessments/${params.id}`} className="text-sm text-gray-500 hover:text-indigo-600">
+        <Link href={`/teacher/assessments/${params.id}`} className="text-sm transition-colors" style={{ color: "#6b7280" }}>
           {assessment.title}
         </Link>
-        <span className="text-gray-400">/</span>
-        <span className="text-sm text-gray-700">Grade Submissions</span>
+        <span style={{ color: "#2e3250" }}>/</span>
+        <span className="text-sm" style={{ color: "#a0a8c0" }}>Grade Submissions</span>
       </div>
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Grade Submissions</h1>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span className="font-medium">{submissions.length}</span> submissions
+        <h1 className="text-2xl font-bold text-white">Grade Submissions</h1>
+        <div className="flex items-center gap-2 text-sm" style={{ color: "#6b7280" }}>
+          <span className="font-medium text-white">{submissions.length}</span> submissions
         </div>
       </div>
 

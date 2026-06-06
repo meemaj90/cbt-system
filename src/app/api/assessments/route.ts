@@ -17,6 +17,7 @@ const createSchema = z.object({
   totalMarks: z.number().default(100),
   passMark: z.number().default(50),
   instructions: z.string().optional(),
+  randomizeQuestions: z.boolean().optional().default(false),
   questions: z.array(z.any()).optional(),
   projectCriteria: z.array(z.any()).optional(),
   oralCriteria: z.array(z.any()).optional(),
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
                 marks: q.marks,
                 options: q.options ? JSON.stringify(q.options) : null,
                 correctAnswer: q.correctAnswer || null,
+                imageUrl: q.imageUrl || null,
               })),
             }
           : undefined,

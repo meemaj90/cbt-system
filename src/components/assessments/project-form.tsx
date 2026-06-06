@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { CriteriaData } from "@/types";
 
 interface ProjectFormProps {
@@ -11,16 +9,11 @@ interface ProjectFormProps {
 
 export function ProjectForm({ criteria, onChange }: ProjectFormProps) {
   function addCriteria() {
-    onChange([
-      ...criteria,
-      { name: "", description: "", maxMarks: 10 },
-    ]);
+    onChange([...criteria, { name: "", description: "", maxMarks: 10 }]);
   }
-
   function removeCriteria(idx: number) {
     onChange(criteria.filter((_, i) => i !== idx));
   }
-
   function update(idx: number, field: keyof CriteriaData, value: any) {
     onChange(criteria.map((c, i) => (i === idx ? { ...c, [field]: value } : c)));
   }
@@ -28,35 +21,39 @@ export function ProjectForm({ criteria, onChange }: ProjectFormProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-medium text-gray-700">Evaluation Rubric / Criteria</h3>
-        <Button type="button" variant="secondary" size="sm" onClick={addCriteria}>
+        <h3 className="text-sm font-medium" style={{ color: "#a0a8c0" }}>Evaluation Rubric / Criteria</h3>
+        <button type="button" className="btn-secondary text-xs px-3 py-1.5" onClick={addCriteria}>
           + Add Criteria
-        </Button>
+        </button>
       </div>
 
       {criteria.length === 0 && (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 text-gray-500 text-sm">
+        <div
+          className="text-center py-8 rounded-xl border-2 border-dashed text-sm"
+          style={{ borderColor: "#2e3250", color: "#6b7280" }}
+        >
           Add rubric criteria for grading this project
         </div>
       )}
 
       {criteria.map((c, idx) => (
-        <div key={idx} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <div key={idx} className="rounded-xl border p-4" style={{ background: "#1e2235", borderColor: "#2e3250" }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-700">Criteria {idx + 1}</span>
+            <span className="text-sm font-medium" style={{ color: "#a0a8c0" }}>Criteria {idx + 1}</span>
             <button
               type="button"
               onClick={() => removeCriteria(idx)}
-              className="text-red-500 hover:text-red-700 text-sm"
+              className="text-xs px-2 py-1 rounded"
+              style={{ color: "#ef4444", background: "rgba(239,68,68,0.1)" }}
             >
               Remove
             </button>
           </div>
-
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
               <label className="form-label">Criteria Name</label>
-              <Input
+              <input
+                className="form-input"
                 value={c.name}
                 onChange={(e) => update(idx, "name", e.target.value)}
                 placeholder="e.g., Design & Layout"
@@ -65,9 +62,10 @@ export function ProjectForm({ criteria, onChange }: ProjectFormProps) {
             </div>
             <div>
               <label className="form-label">Max Marks</label>
-              <Input
+              <input
                 type="number"
                 min={1}
+                className="form-input"
                 value={c.maxMarks}
                 onChange={(e) => update(idx, "maxMarks", parseInt(e.target.value) || 1)}
               />
@@ -87,9 +85,9 @@ export function ProjectForm({ criteria, onChange }: ProjectFormProps) {
       ))}
 
       {criteria.length > 0 && (
-        <div className="text-sm text-gray-600 font-medium">
-          Total Criteria: {criteria.length} | Total Marks:{" "}
-          {criteria.reduce((sum, c) => sum + c.maxMarks, 0)}
+        <div className="flex items-center gap-4 text-sm" style={{ color: "#a0a8c0" }}>
+          <span>Total Criteria: <strong style={{ color: "#fff" }}>{criteria.length}</strong></span>
+          <span>Total Marks: <strong style={{ color: "#fff" }}>{criteria.reduce((sum, c) => sum + c.maxMarks, 0)}</strong></span>
         </div>
       )}
     </div>

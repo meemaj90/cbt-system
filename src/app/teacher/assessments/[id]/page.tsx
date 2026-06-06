@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/badge";
-import { formatDateTime, formatDate } from "@/lib/utils";
+import { formatDateTime } from "@/lib/utils";
 import { PublishButton } from "./publish-button";
 
 export default async function AssessmentDetailPage({ params }: { params: { id: string } }) {
@@ -35,18 +35,18 @@ export default async function AssessmentDetailPage({ params }: { params: { id: s
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/teacher/assessments" className="text-sm text-gray-500 hover:text-indigo-600">
+            <Link href="/teacher/assessments" className="text-sm transition-colors" style={{ color: "#6b7280" }}>
               Assessments
             </Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-sm text-gray-700">{assessment.title}</span>
+            <span style={{ color: "#2e3250" }}>/</span>
+            <span className="text-sm" style={{ color: "#a0a8c0" }}>{assessment.title}</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">{assessment.title}</h1>
+          <h1 className="text-2xl font-bold text-white">{assessment.title}</h1>
           <div className="flex items-center gap-3 mt-2">
             <StatusBadge status={assessment.status} />
-            <span className="text-sm text-gray-500">{assessment.type}</span>
-            <span className="text-sm text-gray-500">{assessment.subject.name}</span>
-            {assessment.class && <span className="text-sm text-gray-500">{assessment.class.name}</span>}
+            <span className="text-sm" style={{ color: "#6b7280" }}>{assessment.type}</span>
+            <span className="text-sm" style={{ color: "#6b7280" }}>{assessment.subject.name}</span>
+            {assessment.class && <span className="text-sm" style={{ color: "#6b7280" }}>{assessment.class.name}</span>}
           </div>
         </div>
         <div className="flex gap-2">
@@ -58,70 +58,81 @@ export default async function AssessmentDetailPage({ params }: { params: { id: s
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-900">{assessment.totalMarks}</div>
-          <div className="text-xs text-gray-500 mt-0.5">Total Marks</div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-900">{assessment._count.submissions}</div>
-          <div className="text-xs text-gray-500 mt-0.5">Submissions</div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-900">{assessment.passMark}</div>
-          <div className="text-xs text-gray-500 mt-0.5">Pass Mark</div>
-        </div>
+        {[
+          { label: "Total Marks", value: assessment.totalMarks },
+          { label: "Submissions", value: assessment._count.submissions },
+          { label: "Pass Mark", value: assessment.passMark },
+        ].map((s) => (
+          <div key={s.label} className="card text-center py-5">
+            <div className="text-2xl font-bold text-white">{s.value}</div>
+            <div className="text-xs mt-0.5" style={{ color: "#6b7280" }}>{s.label}</div>
+          </div>
+        ))}
       </div>
 
       {assessment.instructions && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-          <p className="text-sm font-medium text-blue-800 mb-1">Instructions</p>
-          <p className="text-sm text-blue-700">{assessment.instructions}</p>
+        <div
+          className="rounded-xl p-4 mb-6"
+          style={{ background: "rgba(26,86,219,0.08)", border: "1px solid rgba(26,86,219,0.2)" }}
+        >
+          <p className="text-sm font-medium mb-1" style={{ color: "#3b82f6" }}>Instructions</p>
+          <p className="text-sm" style={{ color: "#a0a8c0" }}>{assessment.instructions}</p>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
+      <div className="grid grid-cols-2 gap-4 mb-6 text-sm" style={{ color: "#a0a8c0" }}>
         {assessment.startTime && (
-          <div><span className="font-medium">Start:</span> {formatDateTime(assessment.startTime)}</div>
+          <div><span className="font-medium text-white">Start:</span> {formatDateTime(assessment.startTime)}</div>
         )}
         {assessment.endTime && (
-          <div><span className="font-medium">End:</span> {formatDateTime(assessment.endTime)}</div>
+          <div><span className="font-medium text-white">End:</span> {formatDateTime(assessment.endTime)}</div>
         )}
         {assessment.duration && (
-          <div><span className="font-medium">Duration:</span> {assessment.duration} minutes</div>
+          <div><span className="font-medium text-white">Duration:</span> {assessment.duration} minutes</div>
         )}
       </div>
 
-      {/* Questions / Criteria */}
+      {/* Questions */}
       {assessment.type === "WRITTEN" && assessment.questions.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 mb-6">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="font-semibold text-gray-900">Questions ({assessment.questions.length})</h2>
+        <div className="card mb-6 p-0 overflow-hidden">
+          <div className="px-6 py-4 border-b" style={{ borderColor: "#2e3250" }}>
+            <h2 className="font-semibold text-white">Questions ({assessment.questions.length})</h2>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div>
             {assessment.questions.map((q, i) => {
               const options = q.options ? JSON.parse(q.options) : null;
               return (
-                <div key={q.id} className="px-6 py-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-700 mb-1">
-                        Q{i + 1}. [{q.type}] — {q.marks} mark{q.marks > 1 ? "s" : ""}
-                      </p>
-                      <p className="text-sm text-gray-900">{q.text}</p>
-                      {options && (
-                        <div className="mt-2 space-y-1">
-                          {options.map((opt: string, oi: number) => (
-                            <div key={oi} className={`text-sm px-2 py-0.5 rounded ${opt === q.correctAnswer ? "bg-green-100 text-green-800 font-medium" : "text-gray-600"}`}>
-                              {String.fromCharCode(65 + oi)}. {opt}
-                            </div>
-                          ))}
+                <div key={q.id} className="px-6 py-4 border-b last:border-0" style={{ borderColor: "#2e3250" }}>
+                  <p className="text-xs font-medium mb-1" style={{ color: "#6b7280" }}>
+                    Q{i + 1}. [{q.type}] — {q.marks} mark{q.marks > 1 ? "s" : ""}
+                  </p>
+                  <p className="text-sm text-white">{q.text}</p>
+                  {q.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={q.imageUrl} alt="Q image" className="mt-2 max-h-32 rounded" />
+                  )}
+                  {options && (
+                    <div className="mt-2 space-y-1">
+                      {options.map((opt: string, oi: number) => (
+                        <div
+                          key={oi}
+                          className="text-sm px-2 py-0.5 rounded"
+                          style={
+                            opt === q.correctAnswer
+                              ? { background: "rgba(16,185,129,0.15)", color: "#10b981" }
+                              : { color: "#a0a8c0" }
+                          }
+                        >
+                          {String.fromCharCode(65 + oi)}. {opt}
                         </div>
-                      )}
-                      {q.correctAnswer && q.type !== "MCQ" && (
-                        <p className="text-xs text-green-700 mt-1">Expected: {q.correctAnswer}</p>
-                      )}
+                      ))}
                     </div>
-                  </div>
+                  )}
+                  {q.correctAnswer && q.type !== "MCQ" && (
+                    <p className="text-xs mt-1" style={{ color: "#10b981" }}>
+                      Expected: {q.correctAnswer}
+                    </p>
+                  )}
                 </div>
               );
             })}
@@ -130,18 +141,18 @@ export default async function AssessmentDetailPage({ params }: { params: { id: s
       )}
 
       {assessment.type === "PROJECT" && assessment.projectCriteria.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 mb-6">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="font-semibold text-gray-900">Rubric Criteria</h2>
+        <div className="card mb-6 p-0 overflow-hidden">
+          <div className="px-6 py-4 border-b" style={{ borderColor: "#2e3250" }}>
+            <h2 className="font-semibold text-white">Rubric Criteria</h2>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div>
             {assessment.projectCriteria.map((c) => (
-              <div key={c.id} className="px-6 py-4 flex items-center justify-between">
+              <div key={c.id} className="px-6 py-4 border-b last:border-0 flex items-center justify-between" style={{ borderColor: "#2e3250" }}>
                 <div>
-                  <p className="font-medium text-gray-900">{c.name}</p>
-                  {c.description && <p className="text-sm text-gray-500">{c.description}</p>}
+                  <p className="font-medium text-white">{c.name}</p>
+                  {c.description && <p className="text-sm" style={{ color: "#6b7280" }}>{c.description}</p>}
                 </div>
-                <span className="text-sm font-medium text-indigo-700">{c.maxMarks} marks</span>
+                <span className="text-sm font-medium" style={{ color: "#3b82f6" }}>{c.maxMarks} marks</span>
               </div>
             ))}
           </div>
@@ -149,18 +160,18 @@ export default async function AssessmentDetailPage({ params }: { params: { id: s
       )}
 
       {assessment.type === "ORAL" && assessment.oralCriteria.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 mb-6">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="font-semibold text-gray-900">Oral Criteria</h2>
+        <div className="card mb-6 p-0 overflow-hidden">
+          <div className="px-6 py-4 border-b" style={{ borderColor: "#2e3250" }}>
+            <h2 className="font-semibold text-white">Oral Criteria</h2>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div>
             {assessment.oralCriteria.map((c) => (
-              <div key={c.id} className="px-6 py-4 flex items-center justify-between">
+              <div key={c.id} className="px-6 py-4 border-b last:border-0 flex items-center justify-between" style={{ borderColor: "#2e3250" }}>
                 <div>
-                  <p className="font-medium text-gray-900">{c.name}</p>
-                  {c.description && <p className="text-sm text-gray-500">{c.description}</p>}
+                  <p className="font-medium text-white">{c.name}</p>
+                  {c.description && <p className="text-sm" style={{ color: "#6b7280" }}>{c.description}</p>}
                 </div>
-                <span className="text-sm font-medium text-indigo-700">{c.maxMarks} marks</span>
+                <span className="text-sm font-medium" style={{ color: "#3b82f6" }}>{c.maxMarks} marks</span>
               </div>
             ))}
           </div>
@@ -168,31 +179,35 @@ export default async function AssessmentDetailPage({ params }: { params: { id: s
       )}
 
       {/* Recent Submissions */}
-      <div className="bg-white rounded-xl border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">Recent Submissions</h2>
-          <Link href={`/teacher/assessments/${assessment.id}/grade`} className="text-sm text-indigo-600 hover:text-indigo-800">
+      <div className="card p-0 overflow-hidden">
+        <div className="px-6 py-4 border-b flex items-center justify-between" style={{ borderColor: "#2e3250" }}>
+          <h2 className="font-semibold text-white">Recent Submissions</h2>
+          <Link
+            href={`/teacher/assessments/${assessment.id}/grade`}
+            className="text-sm"
+            style={{ color: "#3b82f6" }}
+          >
             View all
           </Link>
         </div>
-        <div className="divide-y divide-gray-100">
+        <div>
           {submissions.length === 0 ? (
-            <p className="px-6 py-8 text-center text-gray-500 text-sm">No submissions yet.</p>
+            <p className="px-6 py-8 text-center text-sm" style={{ color: "#6b7280" }}>No submissions yet.</p>
           ) : (
             submissions.map((s) => (
-              <div key={s.id} className="px-6 py-4 flex items-center justify-between">
+              <div key={s.id} className="px-6 py-4 border-b last:border-0 flex items-center justify-between" style={{ borderColor: "#2e3250" }}>
                 <div>
-                  <p className="font-medium text-gray-900">{s.student.name}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-medium text-white">{s.student.name}</p>
+                  <p className="text-xs" style={{ color: "#6b7280" }}>
                     {s.student.studentId} · {s.student.class?.name}
                   </p>
                 </div>
                 <div className="text-right">
                   <StatusBadge status={s.status} />
                   {s.totalScore !== null && (
-                    <p className="text-sm font-medium text-gray-900 mt-1">
+                    <p className="text-sm font-medium text-white mt-1">
                       {s.totalScore}/{assessment.totalMarks}
-                      {s.grade && <span className="ml-2 text-indigo-600">{s.grade}</span>}
+                      {s.grade && <span className="ml-2" style={{ color: "#3b82f6" }}>{s.grade}</span>}
                     </p>
                   )}
                 </div>

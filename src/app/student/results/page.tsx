@@ -7,10 +7,7 @@ export default async function StudentResultsPage() {
   const userId = session!.user!.id!;
 
   const submissions = await prisma.submission.findMany({
-    where: {
-      studentId: userId,
-      status: { in: ["SUBMITTED", "GRADED"] },
-    },
+    where: { studentId: userId, status: { in: ["SUBMITTED", "GRADED"] } },
     include: {
       student: {
         select: { name: true, studentId: true, class: { select: { name: true } } },
@@ -52,20 +49,23 @@ export default async function StudentResultsPage() {
   return (
     <div className="page-container">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Results</h1>
-        <p className="text-gray-500 text-sm mt-1">{results.length} assessments taken</p>
+        <h1 className="text-2xl font-bold text-white">My Results</h1>
+        <p className="text-sm mt-1" style={{ color: "#6b7280" }}>{results.length} assessment{results.length !== 1 ? "s" : ""} taken</p>
       </div>
 
       {avgPercentage !== null && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 flex items-center gap-6">
+        <div className="card flex items-center gap-6 mb-6">
           <div>
-            <p className="text-sm text-gray-500">Average Score</p>
-            <p className="text-3xl font-bold text-indigo-600">{avgPercentage.toFixed(1)}%</p>
+            <p className="text-sm" style={{ color: "#6b7280" }}>Average Score</p>
+            <p className="text-3xl font-bold" style={{ color: "#1a56db" }}>{avgPercentage.toFixed(1)}%</p>
           </div>
-          <div className="flex-1 bg-gray-100 rounded-full h-3">
+          <div className="flex-1 rounded-full h-3" style={{ background: "#2e3250" }}>
             <div
-              className="bg-indigo-500 h-3 rounded-full transition-all"
-              style={{ width: `${Math.min(avgPercentage, 100)}%` }}
+              className="h-3 rounded-full transition-all"
+              style={{
+                width: `${Math.min(avgPercentage, 100)}%`,
+                background: avgPercentage >= 50 ? "#1a56db" : "#ef4444",
+              }}
             />
           </div>
         </div>

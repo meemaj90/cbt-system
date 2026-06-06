@@ -21,7 +21,6 @@ export default async function StudentAssessmentsPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  // Get student's submissions to show status
   const submissions = await prisma.submission.findMany({
     where: { studentId: userId },
     select: { assessmentId: true, status: true, totalScore: true, grade: true },
@@ -31,13 +30,13 @@ export default async function StudentAssessmentsPage() {
   return (
     <div className="page-container">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Available Assessments</h1>
-        <p className="text-gray-500 text-sm mt-1">{assessments.length} assessments available</p>
+        <h1 className="text-2xl font-bold text-white">Available Assessments</h1>
+        <p className="text-sm mt-1" style={{ color: "#6b7280" }}>{assessments.length} assessment{assessments.length !== 1 ? "s" : ""} available</p>
       </div>
 
       {assessments.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-500">No assessments available for your class right now.</p>
+        <div className="card text-center py-16 text-sm" style={{ color: "#6b7280" }}>
+          No assessments available for your class right now.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -53,11 +52,17 @@ export default async function StudentAssessmentsPage() {
                 {sub && (
                   <div className="absolute top-3 right-3">
                     {sub.status === "GRADED" && sub.grade ? (
-                      <span className="text-lg font-bold text-indigo-600 bg-indigo-50 w-8 h-8 rounded-full flex items-center justify-center">
+                      <span
+                        className="text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center"
+                        style={{ background: "rgba(26,86,219,0.2)", color: "#3b82f6" }}
+                      >
                         {sub.grade}
                       </span>
                     ) : (
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">
+                      <span
+                        className="text-xs font-medium px-2 py-0.5 rounded-full"
+                        style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}
+                      >
                         {sub.status === "SUBMITTED" ? "Submitted" : "In Progress"}
                       </span>
                     )}
